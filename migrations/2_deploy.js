@@ -1,4 +1,5 @@
 const Token = artifacts.require("Token");
+const dBank = artifacts.require("dBank");
 
 // Put the contract on the blockchain
 module.exports = async function(deployer) {
