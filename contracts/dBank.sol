@@ -15,6 +15,7 @@ contract dBank {
 
     //add events
     event Deposit(address indexed user, uint etherAmount, uint timeStart);
+    event Withdraw(address indexed user, uint etherAmount, uint depositTime, uint interest);
 
     // Pass as constructor argument deployed Token contract
     constructor(Token _token) public {
@@ -39,5 +40,41 @@ contract dBank {
 
         // Emit Deposit event
         emit Deposit(msg.sender, msg.value, block.timestamp);
+    }
+
+    function withdraw() public {
+        // Check if msg.sender deposit status is true
+        require(isDeposited[msg.sender] == true, "Error, no previous deposit");
+        
+        // Assign msg.sender ether deposit balance to variable for event
+        uint userBalance = etherBalanceOf[msg.sender];
+
+        // Check user's hold time
+        uint depositTime = block.timestamp - depositStart[msg.sender];
+
+        // 31668017 - interest(10% APY) per second for minimum deposit amount (0.01 ETH)
+        // 1e15(10% of 0.01 ETH) / 31577600 (seconds in 365.25 days)
+
+        // (etherBalanceOf[msg.sender] / 1e16) - calc. how much higher interest will be (based on deposit), e.g.:
+        // for minimum deposit (0.01 ETH), (etherBalanceOf[msg.sender] / 1e16) = 1 (the same, 31668017/s)
+        // for deposit 0.02 ETH, (etherBalanceOf[msg.sender] / 1e16) = 2 (doubled, (2*31668017)/s)
+    
+        // Calculate interest per second
+        uint interestPerSecond = 31668017 * (etherBalanceOf[msg.sender] / 1e16);
+        // Calculate accrued interest
+        uint interest = interestPerSecond * depositTime;
+
+        // Send eth to user
+        msg.sender.transfer(userBalance);
+        // Send interest in tokens to user
+        token.mint(msg.sender, interest);
+
+        // Reset depositer data
+        depositStart[msg.sender] = 0;
+        etherBalanceOf[msg.sender] = 0;
+        isDeposited[msg.sender] = false;
+
+        // Emit event
+        emit Withdraw(msg.sender, userBalance, depositTime, interest);
     }
 }

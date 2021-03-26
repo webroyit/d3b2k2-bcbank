@@ -8,4 +8,5 @@
 - WEI is like a penny for ethereum
 - Gas fee occur when you create transactions on the ethereum network
 - We have gas fee because it is used to prevent spam on the network and it help maintain the security of the blockchain
-- Event in solidity is used to keep track of certain activities happen on the blockchain 
+- Event in solidity is used to keep track of certain activities happen on the blockchain
+- `block.timestamp` are measure in seconds that is based on epic time
