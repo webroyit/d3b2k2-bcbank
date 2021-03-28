@@ -60,6 +60,19 @@ class App extends Component {
     }
   }
 
+  async deposit(amount) {
+    // Check if this.state.dbank is ok
+    if(this.state.dbank!=='undefined'){
+      try{
+        // Call dBank deposit();
+        await this.state.dbank.methods.deposit().send({value: amount.toString(), from: this.state.account});
+      }
+      catch (e) {
+        console.log('Error, deposit: ', e);
+      }
+    }
+  }
+
   render() {
     return (
       <div className='text-monospace'>
@@ -73,15 +86,43 @@ class App extends Component {
         </nav>
         <div className="container-fluid mt-5 text-center">
         <br></br>
-          <h1>{/*add welcome msg*/}</h1>
-          <h2>{/*add user address*/}</h2>
+          <h1>Weclome to WRI dBank</h1>
+          <h2>{this.state.account}</h2>
           <br></br>
           <div className="row">
             <main role="main" className="col-lg-12 d-flex text-center">
               <div className="content mr-auto ml-auto">
               <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example">
-                {/*add Tab deposit*/}
-                {/*add Tab withdraw*/}
+                <Tab eventKey="deposit" title="Deposit">
+                  <div>
+                  <br></br>
+                    How much do you want to deposit?
+                    <br></br>
+                    (min. amount is 0.01 ETH)
+                    <br></br>
+                    (1 deposit is possible at the time)
+                    <br></br>
+                    <form onSubmit={(e) => {
+                      e.preventDefault();
+                      let amount = this.depositAmount.value;
+                      amount = amount * 10**18;   // Convert to wei
+                      this.deposit(amount);
+                    }}>
+                      <div className='form-group mr-sm-2'>
+                      <br></br>
+                        <input
+                          className="form-control form-control-md"
+                          id='depositAmount'
+                          step="0.01"
+                          type='number'
+                          placeholder='Amount...'
+                          required
+                          ref={(input) => { this.depositAmount = input }} />
+                      </div>
+                      <button type='submit' className='btn btn-primary'>DEPOSIT</button>
+                    </form>
+                  </div>
+                </Tab>
               </Tabs>
               </div>
             </main>
