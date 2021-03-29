@@ -73,6 +73,17 @@ class App extends Component {
     }
   }
 
+  async withdraw(e) {
+    e.preventDefault()
+    if(this.state.dbank!=='undefined'){
+      try{
+        await this.state.dbank.methods.withdraw().send({from: this.state.account});
+      } catch(e) {
+        console.log('Error, withdraw: ', e);
+      }
+    }
+  }
+
   render() {
     return (
       <div className='text-monospace'>
@@ -121,6 +132,15 @@ class App extends Component {
                       </div>
                       <button type='submit' className='btn btn-primary'>DEPOSIT</button>
                     </form>
+                  </div>
+                </Tab>
+                <Tab eventKey="withdraw" title="Withdraw">
+                  <br></br>
+                    Do you want to withdraw + take interest?
+                    <br></br>
+                    <br></br>
+                  <div>
+                    <button type='submit' className='btn btn-primary' onClick={(e) => this.withdraw(e)}>WITHDRAW</button>
                   </div>
                 </Tab>
               </Tabs>
