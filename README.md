@@ -1,4 +1,14 @@
 # BC Bank
+Earn interest when you deposit ETH.  The template is from Dapp University youtube channel.
+
+## What it does?
+- You can deposit ETH
+- You can withdraw ETH and earn interest
+
+## Packages
+- `@openzeppelin/contracts` a library for secure smart contract development
+- `chai` for testing
+- `web3` to interact with ethereum node
 
 ## Notes
 - `msg.sender` is a global variable inside of solidity
